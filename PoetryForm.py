@@ -6,10 +6,13 @@ class PoetryForm:
 
         self.pronouncing_dict = open("pronouncing_dictionary.txt").readlines()
 
+        self.current_number = 1
+
     def get_structure(self, input_poem_file):
 
         input_poem = open(input_poem_file).readlines()
         last_words = [line.split(" ").pop().replace("\n", " ").replace(".", "").upper() for line in input_poem]
+        rhyming_lines = [None]*len(last_words)
 
         last_pronunciations = []
         for word in last_words:
@@ -21,12 +24,23 @@ class PoetryForm:
                 else:
                     word = word[:-1]
 
+        for ind_pronunciation, pronunciation in enumerate(last_pronunciations):
+            for ind_sound, sound in enumerate(pronunciation):
+                subset = "".join(pronunciation[-(ind_sound+1):])
+                for ind_other, other_pronunciation in enumerate(last_pronunciations):
+                    if ind_pronunciation == ind_other:
+                        continue
+                    if subset in other_pronunciation:
+                        print("{0}:{1} match".format(ind_pronunciation, ind_other))
+
+
     def find_in_dict(self, word):
 
         for line in self.pronouncing_dict:
             if word in line:
                 line = line.split(" ")[2:]
-                print(line)
+                line.append(line.pop().rstrip())
+                # print(line)
                 return line
         return False
 
