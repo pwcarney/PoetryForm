@@ -6,8 +6,6 @@ class PoetryForm:
 
         self.pronouncing_dict = open("pronouncing_dictionary.txt").readlines()
 
-        self.current_number = 1
-
     def get_structure(self, input_poem_file):
 
         input_poem = open(input_poem_file).readlines()
@@ -24,15 +22,18 @@ class PoetryForm:
                 else:
                     word = word[:-1]
 
+        current_number = 'a'
         for ind_pronunciation, pronunciation in enumerate(last_pronunciations):
             for ind_sound, sound in enumerate(pronunciation):
                 subset = "".join(pronunciation[-(ind_sound+1):])
                 for ind_other, other_pronunciation in enumerate(last_pronunciations):
-                    if ind_pronunciation == ind_other:
+                    if ind_pronunciation == ind_other or rhyming_lines[ind_other]:
                         continue
                     if subset in other_pronunciation:
-                        print("{0}:{1} match".format(ind_pronunciation, ind_other))
-
+                        rhyming_lines[ind_pronunciation] = current_number
+                        rhyming_lines[ind_other] = current_number
+            current_number = chr(ord(current_number) + 1)
+        print("".join(rhyming_lines))
 
     def find_in_dict(self, word):
 
