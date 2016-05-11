@@ -1,3 +1,4 @@
+import re
 
 
 class PoetryForm:
@@ -22,7 +23,7 @@ class PoetryForm:
                 else:
                     word = word[:-1]
 
-        current_number = 'a'
+        current_letter = 'a'
         for ind_pronunciation, pronunciation in enumerate(last_pronunciations):
             for ind_sound, sound in enumerate(pronunciation):
                 subset = "".join(pronunciation[-(ind_sound+1):])
@@ -30,15 +31,17 @@ class PoetryForm:
                     if ind_pronunciation == ind_other or rhyming_lines[ind_other]:
                         continue
                     if subset in other_pronunciation:
-                        rhyming_lines[ind_pronunciation] = current_number
-                        rhyming_lines[ind_other] = current_number
-            current_number = chr(ord(current_number) + 1)
+                        rhyming_lines[ind_pronunciation] = current_letter
+                        rhyming_lines[ind_other] = current_letter
+                        continue
+                    #rhyming_lines[ind_pronunciation] = current_letter
+            current_letter = chr(ord(current_letter) + 1)
         print("".join(rhyming_lines))
 
     def find_in_dict(self, word):
 
         for line in self.pronouncing_dict:
-            if word in line:
+            if bool(re.search('^' + word, line)):
                 line = line.split(" ")[2:]
                 line.append(line.pop().rstrip())
                 # print(line)
